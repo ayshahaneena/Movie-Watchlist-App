@@ -177,6 +177,29 @@ router.delete('/:id', auth, async (req, res) => {
   }
 });
 
+// @route   DELETE /api/watchlist/by-movie/:movieId
+// @desc    Remove movie from watchlist by movie ID
+// @access  Private
+router.delete('/by-movie/:movieId', auth, async (req, res) => {
+  try {
+    const { movieId } = req.params;
+
+    const watchlistItem = await WatchlistItem.findOneAndDelete({
+      movie: movieId,
+      user: req.user._id
+    });
+
+    if (!watchlistItem) {
+      return res.status(404).json({ message: 'Watchlist item not found' });
+    }
+
+    res.json({ message: 'Movie removed from watchlist' });
+  } catch (error) {
+    console.error('Remove by movie from watchlist error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // @route   GET /api/watchlist/stats
 // @desc    Get user's watchlist statistics
 // @access  Private

@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || ''
-});
+import api from '../api/axios';
 import { FaBookmark, FaEye, FaEyeSlash, FaTrash, FaStar, FaClock, FaUser, FaGlobe } from 'react-icons/fa';
 
 const Watchlist = () => {
@@ -11,12 +8,7 @@ const Watchlist = () => {
   const [error, setError] = useState('');
   const [stats, setStats] = useState({ total: 0, watched: 0, unwatched: 0 });
   const [filter, setFilter] = useState('all'); // 'all', 'watched', 'unwatched'
-  // Feedback state variables removed - feature is hidden
-  // const [feedbackEditingId, setFeedbackEditingId] = useState(null);
-  // const [feedbackRating, setFeedbackRating] = useState(5);
-  // const [feedbackReview, setFeedbackReview] = useState('');
-  // const [feedbackSaving, setFeedbackSaving] = useState(false);
-  // const [feedbackError, setFeedbackError] = useState('');
+  // Feedback feature hidden
 
   useEffect(() => {
     loadWatchlist();
@@ -46,16 +38,10 @@ const Watchlist = () => {
 
   const toggleWatched = async (itemId, currentWatched) => {
     try {
-      const res = await api.put(`/api/watchlist/${itemId}`, {
-        watched: !currentWatched
-      });
-      
-      // Update local state
+      await api.put(`/api/watchlist/${itemId}`, { watched: !currentWatched });
       setWatchlist(watchlist.map(item => 
         item._id === itemId ? { ...item, watched: !currentWatched } : item
       ));
-      
-      // Reload stats
       loadStats();
     } catch (error) {
       console.error('Error updating watched status:', error);
@@ -71,8 +57,6 @@ const Watchlist = () => {
       console.error('Error removing from watchlist:', error);
     }
   };
-
-  // openFeedbackEditor, cancelFeedbackEditor, saveFeedback functions removed - feature is hidden
 
   const filteredWatchlist = watchlist.filter(item => {
     if (filter === 'watched') return item.watched;
@@ -197,7 +181,6 @@ const Watchlist = () => {
                   </div>
                 )}
                 
-                {/* Watched overlay */}
                 {item.watched && (
                   <div style={{
                     position: 'absolute',
@@ -249,23 +232,6 @@ const Watchlist = () => {
                   </p>
                 )}
                 
-                {/* Feedback display - HIDDEN */}
-                {/* {item.watched && (item.rating || item.review) && (
-                  <div style={{ marginBottom: '10px', background: '#f8f9fa', padding: '10px', borderRadius: '6px' }}>
-                    {item.rating && (
-                      <p style={{ marginBottom: '6px', color: '#333' }}>
-                        <FaStar style={{ marginRight: '6px', color: '#ffc107' }} />
-                        {item.rating}/5
-                      </p>
-                    )}
-                    {item.review && (
-                      <p style={{ margin: 0, color: '#555', whiteSpace: 'pre-wrap' }}>
-                        {item.review}
-                      </p>
-                    )}
-                  </div>
-                )} */}
-                
                 <div className="d-flex justify-content-between align-items-center">
                   <button
                     onClick={() => toggleWatched(item._id, item.watched)}
@@ -294,49 +260,6 @@ const Watchlist = () => {
                     Remove
                   </button>
                 </div>
-
-                {/* Feedback editor - HIDDEN */}
-                {/* {feedbackEditingId === item._id && (
-                  <div style={{ marginTop: '12px', background: '#f8f9fa', padding: '12px', borderRadius: '8px' }}>
-                    <div className="d-flex gap-2 align-items-center" style={{ marginBottom: '8px' }}>
-                      <label htmlFor={`rating-${item._id}`} style={{ marginRight: '6px' }}>Rating:</label>
-                      <select
-                        id={`rating-${item._id}`}
-                        className="form-control"
-                        style={{ width: '100px' }}
-                        value={feedbackRating}
-                        onChange={(e) => setFeedbackRating(Number(e.target.value))}
-                      >
-                        <option value={5}>5</option>
-                        <option value={4}>4</option>
-                        <option value={3}>3</option>
-                        <option value={2}>2</option>
-                        <option value={1}>1</option>
-                      </select>
-                      <span style={{ color: '#ffc107' }}><FaStar style={{ marginLeft: '6px' }} /></span>
-                    </div>
-                    <textarea
-                      className="form-control"
-                      rows={3}
-                      maxLength={1000}
-                      placeholder="Share your thoughts about this movie..."
-                      value={feedbackReview}
-                      onChange={(e) => setFeedbackReview(e.target.value)}
-                      style={{ marginBottom: '8px' }}
-                    />
-                    {feedbackError && (
-                      <div style={{ color: '#721c24', background: '#f8d7da', padding: '8px', borderRadius: '6px', marginBottom: '8px' }}>
-                        {feedbackError}
-                      </div>
-                    )}
-                    <div className="d-flex gap-2">
-                      <button onClick={saveFeedback} className="btn btn-success" disabled={feedbackSaving}>
-                        {feedbackSaving ? 'Saving...' : 'Save Feedback'}
-                      </button>
-                      <button onClick={cancelFeedbackEditor} className="btn btn-secondary">Cancel</button>
-                    </div>
-                  </div>
-                )} */}
               </div>
             </div>
           ))}

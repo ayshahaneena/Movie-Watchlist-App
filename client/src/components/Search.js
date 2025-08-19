@@ -1,8 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || ''
-});
+import React, { useState, useEffect, useCallback } from 'react';
+import api from '../api/axios';
 import { FaSearch, FaBookmark, FaStar, FaClock, FaUser, FaGlobe } from 'react-icons/fa';
 
 const Search = () => {
@@ -14,28 +11,12 @@ const Search = () => {
   const [totalResults, setTotalResults] = useState(0);
   const [watchlist, setWatchlist] = useState([]);
 
-  // Load user's watchlist on component mount
-  useEffect(() => {
-    loadWatchlist();
-  }, []);
-
-  const loadWatchlist = async () => {
-    try {
-      const res = await api.get('/api/watchlist');
-      setWatchlist(res.data.map(item => item.movie._id));
-    } catch (error) {
-      console.error('Error loading watchlist:', error);
-    }
-  };
-
-  const searchMovies = async (page = 1) => {
-    if (!query.trim()) return;
-
+  const searchMovies = useCallback(async (searchQuery, page = 1) => {
+    if (!searchQuery.trim()) return;
     setLoading(true);
     setError('');
-
     try {
-      const res = await api.get(`/api/movies/search?query=${encodeURIComponent(query)}&page=${page}`);
+      const res = await api.get(`/api/movies/search?query=${encodeURIComponent(searchQuery)}&page=${page}`);
       setMovies(res.data.movies);
       setTotalResults(res.data.totalResults);
       setCurrentPage(res.data.currentPage);
@@ -44,17 +25,30 @@ const Search = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  const loadWatchlist = useCallback(async () => {
+    try {
+      const res = await api.get('/api/watchlist');
+      setWatchlist(res.data.map(item => item.movie._id));
+    } catch (error) {
+      console.error('Error loading watchlist:', error);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadWatchlist();
+  }, [loadWatchlist]);
 
   const handleSearch = (e) => {
     e.preventDefault();
     setCurrentPage(1);
-    searchMovies(1);
+    searchMovies(query, 1);
   };
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
-    searchMovies(newPage);
+    searchMovies(query, newPage);
   };
 
   const addToWatchlist = async (movieId) => {
@@ -68,12 +62,8 @@ const Search = () => {
 
   const removeFromWatchlist = async (movieId) => {
     try {
-      // Find the watchlist item ID
-      const watchlistItem = watchlist.find(item => item === movieId);
-      if (watchlistItem) {
-        await api.delete(`/api/watchlist/${watchlistItem}`);
-        setWatchlist(watchlist.filter(id => id !== movieId));
-      }
+      await api.delete(`/api/watchlist/by-movie/${movieId}`);
+      setWatchlist(watchlist.filter(id => id !== movieId));
     } catch (error) {
       console.error('Error removing from watchlist:', error);
     }

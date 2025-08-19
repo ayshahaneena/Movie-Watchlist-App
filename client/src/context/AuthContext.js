@@ -1,8 +1,5 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
-import axios from 'axios';
-const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || ''
-});
+import api from '../api/axios';
 
 const AuthContext = createContext();
 
@@ -52,7 +49,6 @@ const authReducer = (state, action) => {
 export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  // Set auth token header
   const setAuthToken = (token) => {
     if (token) {
       api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -63,7 +59,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Load user on mount
   useEffect(() => {
     const loadUser = async () => {
       if (state.token) {
@@ -85,7 +80,6 @@ export const AuthProvider = ({ children }) => {
     loadUser();
   }, []);
 
-  // Register user
   const register = async (formData) => {
     try {
       const res = await api.post('/api/auth/register', formData);
@@ -103,7 +97,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Login user
   const login = async (formData) => {
     try {
       const res = await api.post('/api/auth/login', formData);
@@ -121,13 +114,11 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Logout user
   const logout = () => {
     dispatch({ type: 'LOGOUT' });
     setAuthToken(null);
   };
 
-  // Set loading
   const setLoading = (loading) => {
     dispatch({ type: 'SET_LOADING', payload: loading });
   };
@@ -140,7 +131,7 @@ export const AuthProvider = ({ children }) => {
     register,
     login,
     logout,
-    setLoading
+    setLoading,
   };
 
   return (
@@ -157,4 +148,5 @@ export const useAuth = () => {
   }
   return context;
 };
+
 

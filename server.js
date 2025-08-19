@@ -7,6 +7,14 @@ const path = require('path');
 // Load environment variables
 dotenv.config();
 
+// DEBUG: Check if environment variables are loaded
+console.log('Environment check:');
+console.log('MONGODB_URI:', process.env.MONGODB_URI ? 'SET' : 'NOT SET');
+console.log('JWT_SECRET:', process.env.JWT_SECRET ? 'SET' : 'NOT SET');
+console.log('OMDB_API_KEY:', process.env.OMDB_API_KEY ? 'SET' : 'NOT SET');
+console.log('PORT:', process.env.PORT);
+console.log('NODE_ENV:', process.env.NODE_ENV); 
+
 // Import routes
 const authRoutes = require('./routes/auth');
 const movieRoutes = require('./routes/movies');
@@ -52,3 +60,6 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+
+
