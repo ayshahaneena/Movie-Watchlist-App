@@ -2,6 +2,12 @@
 
 A full-stack web application built with the MERN stack (MongoDB, Express.js, React.js, Node.js) that allows users to search for movies, create personal watchlists, and track their viewing progress.
 
+## Demo
+
+[![Watch the demo](https://via.placeholder.com/600x300.png?text=Watch+Demo)](https://drive.google.com/file/d/1rJBxVb40-BDcmpW-7j-t3qHW9XzULjda/view?usp=sharing)
+
+
+
 ## ✨ Features
 
 - **🔐 Secure Authentication**: JWT-based user registration and login system
