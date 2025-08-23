@@ -4,9 +4,7 @@ A full-stack web application built with the MERN stack (MongoDB, Express.js, Rea
 
 ## Demo
 
-[![Watch the demo](https://via.placeholder.com/600x300.png?text=Watch+Demo)](https://drive.google.com/file/d/1rJBxVb40-BDcmpW-7j-t3qHW9XzULjda/view?usp=sharing)
-
-
+You can view the demo video here: [Movie Watchlist Demo](https://drive.google.com/file/d/1rJBxVb40-BDcmpW-7j-t3qHW9XzULjda/view?usp=sharing)
 
 ## ✨ Features
 
