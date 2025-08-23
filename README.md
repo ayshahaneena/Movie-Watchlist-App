@@ -155,16 +155,17 @@ movie-watchlist/
 
 ## 🚀 Deployment
 
-### Backend Deployment (Heroku)
-1. Create a Heroku app
-2. Set environment variables in Heroku dashboard
-3. Connect your GitHub repository
-4. Deploy automatically on push to main branch
+### Backend Deployment (Render)
+1. Create a new **Web Service** on [Render](https://render.com).
+2. Connect your GitHub repository.
+3. Add your environment variables (`MONGODB_URI`, `JWT_SECRET`, `OMDB_API_KEY`, etc.) in the Render dashboard.
+4. Deploy the backend — Render will auto-deploy on every push to the `main` branch.
 
-### Frontend Deployment
-1. Build the React app: `npm run build`
-2. Deploy the `build` folder to your hosting service
-3. Configure proxy settings for production
+### Frontend Deployment (Vercel)
+1. Push your React app to GitHub.
+2. Import your repo into [Vercel](https://vercel.com).
+3. In project settings, set the build command to:
+
 
 ## 🤝 Contributing
 

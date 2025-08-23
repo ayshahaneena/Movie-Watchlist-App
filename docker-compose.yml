@@ -1,0 +1,41 @@
+services:
+  backend:
+    build: ./backend
+    container_name: watchlist-backend
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/watchlist
+      - JWT_SECRET=movie-watchlist-2024-super-secret-jwt-key-8f7d6e5c4b3a2
+      - OMDB_API_KEY=67423c44
+      - NODE_ENV=production
+    depends_on:
+      - mongo
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        REACT_APP_API_URL: http://localhost:5000
+    container_name: watchlist-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:6
+    container_name: watchlist-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    restart: unless-stopped
+
+volumes:
+  mongo-data:
+
+
+
